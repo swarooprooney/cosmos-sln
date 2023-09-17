@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 
 namespace cosmos_container_int_test
 {
@@ -8,7 +9,14 @@ namespace cosmos_container_int_test
 
         public IntegrationTestBase()
         {
-            var webApplicationFactory = new WebApplicationFactory<Program>();
+            var webApplicationFactory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddInMemoryCosmosRepository();
+                });
+            });
             _httpClient = webApplicationFactory.CreateDefaultClient();
         }
     }
