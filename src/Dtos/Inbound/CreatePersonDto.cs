@@ -1,4 +1,4 @@
-namespace cosmos_container.Dtos
+namespace cosmos_container.Inbound.Dtos
 {
     public class CreatePersonDto
     {

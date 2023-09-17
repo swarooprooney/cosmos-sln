@@ -1,5 +1,6 @@
 using cosmos_container.Data;
-using cosmos_container.Dtos;
+using cosmos_container.Inbound.Dtos;
+using cosmos_container.OutBound.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CosmosRepository;
 
@@ -24,7 +25,9 @@ public class PersonController : ControllerBase
         };
 
         var result = await _personRepo.CreateAsync(presonDocument);
-        return Ok($"Person created with {result.Id}");
+        var returnDto = new CreatedPersonDto(result.Id.ToString(), result.Name, result.Age);
+
+        return Ok(returnDto);
     }
 
     [HttpGet("{Id}")]
@@ -35,6 +38,7 @@ public class PersonController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(result);
+        var returnDto = new CreatedPersonDto(result.Id.ToString(), result.Name, result.Age);
+        return Ok(returnDto);
     }
 }
