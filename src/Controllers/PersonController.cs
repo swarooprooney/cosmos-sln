@@ -1,3 +1,4 @@
+using System.Net;
 using cosmos_container.Data;
 using cosmos_container.Inbound.Dtos;
 using cosmos_container.OutBound.Dtos;
@@ -28,17 +29,27 @@ public class PersonController : ControllerBase
         var returnDto = new CreatedPersonDto(result.Id.ToString(), result.Name, result.Age);
 
         return Ok(returnDto);
+
     }
 
     [HttpGet("{Id}")]
     public async Task<IActionResult> Get(string Id)
     {
-        var result = await _personRepo.TryGetAsync(Id);
-        if (result is null)
+        try
         {
-            return NotFound();
+
+            var result = await _personRepo.TryGetAsync(Id);
+            if (result is null)
+            {
+                return NotFound();
+            }
+            var returnDto = new CreatedPersonDto(result.Id.ToString(), result.Name, result.Age);
+            return Ok(returnDto);
+
         }
-        var returnDto = new CreatedPersonDto(result.Id.ToString(), result.Name, result.Age);
-        return Ok(returnDto);
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 }
