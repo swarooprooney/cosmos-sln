@@ -1,6 +1,5 @@
 using cosmos_container.Inbound.Dtos;
 using cosmos_container.OutBound.Dtos;
-using Microsoft.Azure.Cosmos;
 using Shouldly;
 
 namespace cosmos_container_int_test;
@@ -55,31 +54,5 @@ public class PersonControllerTests : IntegrationTestBase
         getPerson.Age.ShouldBe(Age);
         getPerson.Name.ShouldBe(name);
         Guid.TryParse(getPerson.Id, out _).ShouldBe(true);
-    }
-
-    [TestMethod]
-    public async Task CheckIfCosmosWorks()
-    {
-        CosmosClientOptions options = new()
-        {
-            HttpClientFactory = () => new HttpClient(new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            }),
-            ConnectionMode = ConnectionMode.Gateway
-        };
-
-        using CosmosClient client = new CosmosClient(DockerCosmosDatabase.ConnectionString, options);
-
-        Database database = await client.CreateDatabaseIfNotExistsAsync(id: "cosmicworks", throughput: 400);
-        Container container = await database.CreateContainerIfNotExistsAsync(id: "products", partitionKeyPath: "/id");
-
-        var item = new
-        {
-            id = "68719518371",
-            name = "Kiama classic surfboard"
-        };
-
-        await container.UpsertItemAsync(item);
     }
 }
