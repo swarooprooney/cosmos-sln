@@ -18,8 +18,7 @@ namespace cosmos_container_int_test
             {
                 builder.ConfigureServices(services =>
                 {
-                    Action<CosmosClientOptions>? options = CreateClientOptions;
-                    services.AddCosmos(localOptions =>
+                    services.AddCosmos(default, localOptions =>
                     {
                         localOptions.HttpClientFactory = () =>
                         {
@@ -48,19 +47,6 @@ namespace cosmos_container_int_test
                 });
             });
             _httpClient = webApplicationFactory.CreateClient();
-        }
-
-        private void CreateClientOptions(CosmosClientOptions options)
-        {
-            options.HttpClientFactory = () =>
-            {
-                HttpMessageHandler messageHandler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                };
-                return new HttpClient(messageHandler);
-            };
-            options.ConnectionMode = ConnectionMode.Gateway;
         }
     }
 }
